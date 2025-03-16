@@ -15,6 +15,8 @@ func GetProjectContext() (string, error) {
 		return "", err
 	}
 
+	// codemateInstructions := loadCodemateInstructions(root)
+
 	files, err := getAllFiles(root)
 	if err != nil {
 		return "", fmt.Errorf("Can't file the files\n")
@@ -90,3 +92,13 @@ func FindGitRoot() (string, error) {
 
 	return "", fmt.Errorf("no Git repository found")
 }
+
+// func loadCodemateInstructions(root string) string {
+// 	path := filepath.Join(root, "CODEMATE.md")
+// 	if _, err := os.Stat(path); os.IsNotExist(err) {
+// 		// TODO: create the file if it doesn't exist based on the project
+// 	}
+//
+// 	data, _ := os.ReadFile(path)
+// 	return string(data)
+// }

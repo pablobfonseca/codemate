@@ -38,14 +38,14 @@ codemate --help
 ## Requirements
 
 - Go 1.24 or higher
-- Local [Ollama](https://ollama.ai/) server running with the deepseek-coder model
+- Local [Ollama](https://ollama.ai/) server running with the qwen2.5-coder model
 
 ## Setup Ollama
 
 1. Install Ollama from https://ollama.ai/
-2. Pull the deepseek-coder model:
+2. Pull the qwen2.5-coder model:
    ```bash
-   ollama pull deepseek-coder:6.7b
+   ollama pull qwen2.5-coder
    ```
 3. Start the Ollama server:
    ```bash
@@ -55,3 +55,4 @@ codemate --help
 ## License
 
 [MIT](LICENSE)
+

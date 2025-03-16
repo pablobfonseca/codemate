@@ -39,7 +39,7 @@ func SendMessage(prompt, context string) string {
 	history := LoadHistory()
 
 	data := Request{
-		Model:  "deepseek-coder:6.7b",
+		Model:  "qwen2.5-coder:latest",
 		Prompt: fmt.Sprintf("Context: %s\nUser: %s", context+"\n"+history, prompt),
 		Stream: true,
 	}
