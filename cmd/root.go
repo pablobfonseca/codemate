@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -12,10 +13,17 @@ var rootCmd = &cobra.Command{
 	Short: "An AI assistant for your codebase",
 	Long: `Codemate is a CLI tool that helps you chat with an AI assistant about your code.
 It gathers context from your project files and uses AI to provide helpful answers
-to your coding questions.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+to your coding questions.
+
+- Automatically collects context from your git repository
+- Streams responses in real-time with a beautiful TUI
+- Respects .gitignore rules when scanning your codebase
+- Remembers conversation history for contextual responses`,
+	Run: func(cmd *cobra.Command, args []string) {
+		// If no subcommand is provided, show help
+		fmt.Println("Welcome to Codemate! Use 'codemate chat' to start chatting with your AI assistant.")
+		fmt.Println("\nFor more information, run 'codemate --help'")
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -33,8 +41,4 @@ func init() {
 	// will be global for your application.
 
 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.codemate.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

@@ -27,6 +27,14 @@ type StreamResponse struct {
 	Done      bool   `json:"done"`
 }
 
+type StreamCallback func(chunk string, done bool)
+
+var streamCallback StreamCallback
+
+func SetStreamCallback(callback StreamCallback) {
+	streamCallback = callback
+}
+
 func SendMessage(prompt, context string) string {
 	history := LoadHistory()
 
@@ -39,7 +47,11 @@ func SendMessage(prompt, context string) string {
 	body, _ := json.Marshal(data)
 	resp, err := http.Post("http://localhost:11434/api/generate", "application/json", bytes.NewBuffer(body))
 	if err != nil {
-		return fmt.Sprintf("Error: %v\n", err)
+		errorMsg := fmt.Sprintf("Error connecting to Ollama: %v\n", err)
+		if streamCallback != nil {
+			streamCallback(errorMsg, true)
+		}
+		return errorMsg
 	}
 	defer resp.Body.Close()
 
@@ -52,8 +64,11 @@ func SendMessage(prompt, context string) string {
 			break
 		}
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error reading stream: %v\n", err)
-			break
+			errorMsg := fmt.Sprintf("Error reading stream: %v\n", err)
+			if streamCallback != nil {
+				streamCallback(errorMsg, true)
+			}
+			return fullResponse
 		}
 
 		var streamResp StreamResponse
@@ -62,7 +77,12 @@ func SendMessage(prompt, context string) string {
 			continue
 		}
 
-		fmt.Print(streamResp.Response)
+		if streamCallback != nil {
+			streamCallback(streamResp.Response, streamResp.Done)
+		} else {
+			fmt.Print(streamResp.Response)
+		}
+
 		fullResponse += streamResp.Response
 
 		if streamResp.Done {
@@ -70,8 +90,10 @@ func SendMessage(prompt, context string) string {
 		}
 	}
 
-	SaveMessage(prompt, fullResponse)
+	if streamCallback == nil {
+		SaveMessage(prompt, fullResponse)
+		fmt.Println()
+	}
 
-	fmt.Println()
 	return fullResponse
 }
