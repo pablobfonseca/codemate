@@ -28,9 +28,11 @@ type StreamResponse struct {
 }
 
 func SendMessage(prompt, context string) string {
+	history := LoadHistory()
+
 	data := Request{
 		Model:  "deepseek-coder:6.7b",
-		Prompt: fmt.Sprintf("Context: %s\nUser: %s", context, prompt),
+		Prompt: fmt.Sprintf("Context: %s\nUser: %s", context+"\n"+history, prompt),
 		Stream: true,
 	}
 
@@ -67,6 +69,8 @@ func SendMessage(prompt, context string) string {
 			break
 		}
 	}
+
+	SaveMessage(prompt, fullResponse)
 
 	fmt.Println()
 	return fullResponse

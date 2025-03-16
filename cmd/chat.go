@@ -14,6 +14,11 @@ var chatCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		message := args[0]
 
+		err := internal.InitDB()
+		if err != nil {
+			fmt.Errorf("Error initiating DB: %v\n", err)
+		}
+
 		context, err := internal.GetProjectContext()
 		if err != nil {
 			fmt.Println("Error loading project context:", err)
